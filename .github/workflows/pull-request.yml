@@ -1,0 +1,83 @@
+name: "Merge request"
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  test_lint:
+    name: Type Check And Linting
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v3
+        with:
+          cache: npm
+          node-version: 16.x
+
+      - name: install dependencies
+        run: yarn install
+
+      - name: Type check
+        run: yarn type-check
+
+      - name: linting
+        run: yarn lint
+
+  test_code:
+    needs: test_lint
+    name: Testing CI and coverage
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v3
+        with:
+          cache: npm
+          node-version: 16.x
+
+      - name: install dependencies
+        run: yarn install
+
+      - name: test:ci
+        run: yarn test:ci
+
+      - name: Get Code coverage
+        run: yarn test:cov
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        with:
+          args: >
+            -Dsonar.organization=miguel-jardinez 
+            -Dsonar.projectKey=miguel-jardinez_amazon_clone_api
+            -Dsonar.sources=src
+            -Dsonar.host.url=https://sonarcloud.io
+            -Dsonar.javascript.lcov.reportPaths=./coverage/lcov.info
+            -Dsonar.verbose=true
+
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+
+
+
+
+
+
+
