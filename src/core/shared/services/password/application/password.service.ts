@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { hash, verify } from 'argon2';
+
 import { PasswordRepository } from '../domain/password.repository';
 
 @Injectable()
 export class PasswordService implements PasswordRepository {
   async hashPassword(password: string): Promise<string> {
     try {
-      const hashPassword = await hash(password);
-      return hashPassword;
+      return await hash(password);
     } catch (e) {
       console.log(e);
     }
@@ -18,8 +18,7 @@ export class PasswordService implements PasswordRepository {
     password: string,
   ): Promise<boolean> {
     try {
-      const isValidPassword = await verify(hashedPassword, password);
-      return isValidPassword;
+      return await verify(hashedPassword, password);
     } catch (e) {
       console.log(e);
     }

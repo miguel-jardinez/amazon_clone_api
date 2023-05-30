@@ -1,4 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+
 import { UserRoles } from '../../../../core/models/UserRoles';
 
 @Entity('user')

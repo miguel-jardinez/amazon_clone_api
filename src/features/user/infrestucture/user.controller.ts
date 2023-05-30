@@ -1,17 +1,18 @@
 import {
+  Body,
   Controller,
+  Delete,
   Get,
   Post,
-  Body,
   Put,
-  Delete,
   Request,
 } from '@nestjs/common';
-import { UserService } from '../application/user.service';
+
+import { UserEntity } from '../application/entities/user.entity';
 import { CreateUserDto } from '../application/models/create-user.dto';
 import { UpdateUserDto } from '../application/models/update-user.dto';
+import { UserService } from '../application/user.service';
 import { UserRepository } from '../domain/user.repository';
-import { UserEntity } from '../application/entities/user.entity';
 
 @Controller('user')
 export class UserController implements UserRepository {

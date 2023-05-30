@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './models/create-user.dto';
-import { UpdateUserDto } from './models/update-user.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+
+import { PasswordService } from '../../../core/shared/services/password/application/password.service';
 import { UserRepository } from '../domain/user.repository';
 import { UserEntity } from './entities/user.entity';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
-import { PasswordService } from '../../../core/shared/services/password/application/password.service';
+import { CreateUserDto } from './models/create-user.dto';
+import { UpdateUserDto } from './models/update-user.dto';
 
 @Injectable()
 export class UserService implements UserRepository {
@@ -14,13 +15,11 @@ export class UserService implements UserRepository {
     private readonly userEntity: Repository<UserEntity>,
     private readonly passwordService: PasswordService,
   ) {}
-  async createUser(user: CreateUserDto) {
+  async createUser(user: CreateUserDto): Promise<UserEntity | null> {
     try {
       user.password = await this.passwordService.hashPassword(user.password);
       const data = this.userEntity.create(user);
-      const userCreated = await this.userEntity.save(data);
-
-      return userCreated;
+      return await this.userEntity.save(data);
     } catch (e) {
       console.log(e);
     }
@@ -42,8 +41,7 @@ export class UserService implements UserRepository {
 
   async getByEmail(email: string): Promise<UserEntity | null> {
     try {
-      const data = this.userEntity.findOneByOrFail({ email });
-      return data;
+      return this.userEntity.findOneByOrFail({ email });
     } catch (e) {
       console.log(e);
     }
@@ -51,8 +49,7 @@ export class UserService implements UserRepository {
 
   async getById(id: string): Promise<UserEntity | null> {
     try {
-      const data = this.userEntity.findOneByOrFail({ id });
-      return data;
+      return this.userEntity.findOneByOrFail({ id });
     } catch (e) {
       console.log(e);
     }

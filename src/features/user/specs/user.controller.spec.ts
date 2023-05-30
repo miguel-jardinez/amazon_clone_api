@@ -1,6 +1,8 @@
+import { createMock } from '@golevelup/ts-jest';
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserController } from '../infrestucture/user.controller';
+
 import { UserService } from '../application/user.service';
+import { UserController } from '../infrestucture/user.controller';
 
 describe('UserController', () => {
   let controller: UserController;
@@ -8,7 +10,12 @@ describe('UserController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UserController],
-      providers: [UserService],
+      providers: [
+        {
+          provide: UserService,
+          useValue: createMock<UserService>(),
+        },
+      ],
     }).compile();
 
     controller = module.get<UserController>(UserController);

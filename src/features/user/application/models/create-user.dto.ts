@@ -6,6 +6,7 @@ import {
   IsString,
   Length,
 } from 'class-validator';
+
 import { UserRoles } from '../../../../core/models/UserRoles';
 
 export class CreateUserDto {
