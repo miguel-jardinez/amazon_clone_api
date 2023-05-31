@@ -30,7 +30,7 @@ export class AuthService implements AuthRepository {
       return new LoginResponseDto(user, token);
     } catch (e) {
       this.logger.error(`Error to login ${user.email} :: ${new Date()}`);
-      new AuthExceptionService(e.message, HttpStatus.CONFLICT);
+      throw new AuthExceptionService(e.message, HttpStatus.CONFLICT);
     }
   }
 
@@ -46,7 +46,7 @@ export class AuthService implements AuthRepository {
       return new LoginResponseDto(data, token);
     } catch (e) {
       this.logger.error(`Error to register ${register.email} :: ${new Date()}`);
-      new AuthExceptionService(e.message, HttpStatus.CONFLICT);
+      throw new AuthExceptionService(e.message, HttpStatus.CONFLICT);
     }
   }
 }
