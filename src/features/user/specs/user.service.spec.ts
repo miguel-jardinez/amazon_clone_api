@@ -47,27 +47,35 @@ describe('UserService', () => {
     });
   });
 
-  describe('Update user', async () => {
-    // CONFIGURATION
-    // CALL FUNCTIONS
-    // ASSERTION
+  describe('Update user', () => {
+    it('should ', async () => {
+      // CONFIGURATION
+      // CALL FUNCTIONS
+      // ASSERTION
+    });
   });
 
-  describe('Delete user', async () => {
-    // CONFIGURATION
-    // CALL FUNCTIONS
-    // ASSERTION
+  describe('Delete user', () => {
+    it('should ', async () => {
+      // CONFIGURATION
+      // CALL FUNCTIONS
+      // ASSERTION
+    });
   });
 
-  describe('Get by Id', async () => {
-    // CONFIGURATION
-    // CALL FUNCTIONS
-    // ASSERTION
+  describe('Get by Id', () => {
+    it('should ', async () => {
+      // CONFIGURATION
+      // CALL FUNCTIONS
+      // ASSERTION
+    });
   });
 
-  describe('Get by email', async () => {
-    // CONFIGURATION
-    // CALL FUNCTIONS
-    // ASSERTION
+  describe('Get by email', () => {
+    it('should ', async () => {
+      // CONFIGURATION
+      // CALL FUNCTIONS
+      // ASSERTION
+    });
   });
 });
