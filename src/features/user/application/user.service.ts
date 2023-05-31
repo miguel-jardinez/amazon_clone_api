@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -76,6 +76,31 @@ export class UserService implements UserRepository {
       return data;
     } catch (error) {
       UserException(error, 'Get All Users', this.logger);
+    }
+  }
+
+  async verifyUserLogin(
+    email: string,
+    password: string,
+  ): Promise<UserEntity | null> {
+    try {
+      const data = await this.userEntity.findOneByOrFail({ email });
+      const isPasswordValid = await this.passwordService.verifyPassword(
+        data.password,
+        password,
+      );
+
+      if (!isPasswordValid) {
+        throw new HttpException(
+          'Email or password incorrect',
+          HttpStatus.UNAUTHORIZED,
+        );
+      }
+      delete data.password;
+
+      return data;
+    } catch (e) {
+      UserException(e, email, this.logger);
     }
   }
 }

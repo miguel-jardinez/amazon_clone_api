@@ -13,11 +13,11 @@ import { UserEntity } from '../application/entities/user.entity';
 import { CreateUserDto } from '../application/models/create-user.dto';
 import { DeleteUserDto } from '../application/models/delete-user.dto';
 import { UserService } from '../application/user.service';
-import { UserRepository } from '../domain/user.repository';
+import { UserControllerRepository } from '../domain/user-controller.repository';
 
 @Controller('user')
 @UseInterceptors(ClassSerializerInterceptor)
-export class UserController implements UserRepository {
+export class UserController implements UserControllerRepository {
   constructor(private readonly userService: UserService) {}
 
   @Post()
