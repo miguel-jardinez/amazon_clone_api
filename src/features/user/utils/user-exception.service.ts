@@ -27,7 +27,7 @@ export const UserException = (
     const code = data.code as DatabaseErrorsCodes;
 
     if (code === '23505') {
-      const message = `${value} already exist :: ${new Date()}`;
+      const message = `${value} already exist`;
 
       logger.error(message);
       throw new UserExceptionService(message, HttpStatus.CONFLICT);
