@@ -41,7 +41,9 @@ export class AuthService implements AuthRepository {
         `User ${register.email} successfully registered :: ${new Date()}`,
       );
 
-      return new LoginResponseDto(data, 'token');
+      const token = this.jwtService.sign({ id: data.id });
+
+      return new LoginResponseDto(data, token);
     } catch (e) {
       this.logger.error(`Error to register ${register.email} :: ${new Date()}`);
       new AuthExceptionService(e.message, HttpStatus.CONFLICT);
