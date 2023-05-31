@@ -1,13 +1,4 @@
-import {
-  IsArray,
-  IsEmail,
-  IsEnum,
-  IsNotEmpty,
-  IsString,
-  Length,
-} from 'class-validator';
-
-import { UserRoles } from '../../../../core/models/UserRoles';
+import { IsEmail, IsString, Length } from 'class-validator';
 
 export class CreateUserDto {
   @IsString()
@@ -17,9 +8,4 @@ export class CreateUserDto {
   @IsString()
   @Length(6, 30)
   password: string;
-
-  @IsEnum(UserRoles)
-  @IsArray()
-  @IsNotEmpty()
-  role: UserRoles[];
 }

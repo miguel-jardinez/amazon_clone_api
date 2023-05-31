@@ -32,4 +32,11 @@ export class EnvConfigService implements EnvRepository {
   getDatabaseUrl(): string {
     return this.getString('POSTGRES_URL');
   }
+
+  configJwt(): { secret: string; expiresIn: string } {
+    return {
+      expiresIn: this.getString('JWT_EXPIRES_IN'),
+      secret: this.getString('JWT_SECRET'),
+    };
+  }
 }
