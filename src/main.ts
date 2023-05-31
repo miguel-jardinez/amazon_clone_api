@@ -6,4 +6,4 @@ async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
   await app.listen(8081);
 }
-bootstrap().then();
+bootstrap().then().catch();
