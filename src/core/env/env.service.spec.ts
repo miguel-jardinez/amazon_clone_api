@@ -19,8 +19,8 @@ describe('TypeOrm Service', () => {
       ],
     }).compile();
 
-    service = await module.get<EnvConfigService>(EnvConfigService);
-    configService = await module.get<ConfigService>(ConfigService);
+    service = module.get<EnvConfigService>(EnvConfigService);
+    configService = module.get<ConfigService>(ConfigService);
   });
 
   describe('Modules', () => {

@@ -11,7 +11,7 @@ describe('TypeOrm Service', () => {
       providers: [PasswordService],
     }).compile();
 
-    service = await module.get<PasswordService>(PasswordService);
+    service = module.get<PasswordService>(PasswordService);
   });
 
   describe('Modules', () => {
