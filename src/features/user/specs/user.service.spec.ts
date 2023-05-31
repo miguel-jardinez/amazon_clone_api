@@ -124,4 +124,23 @@ describe('UserService', () => {
       expect(data).toEqual({ ...CreateUserDto, id: mockId });
     });
   });
+
+  describe('Find all users', () => {
+    it('should return all users', async () => {
+      // CONFIGURATION
+      const finAllSpy = jest.spyOn(repository, 'find').mockResolvedValue([
+        {
+          ...CreateUserDto,
+          id: mockId,
+        },
+      ]);
+
+      // CALL FUNCTIONS
+      const data = await service.finAllUsers();
+
+      // ASSERTION
+      expect(finAllSpy).toHaveBeenCalled();
+      expect(data).toEqual([{ ...CreateUserDto, id: mockId }]);
+    });
+  });
 });
