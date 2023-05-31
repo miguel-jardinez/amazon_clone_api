@@ -37,6 +37,6 @@ export class UserController implements UserRepository {
 
   @Get()
   finAllUsers(): Promise<UserEntity[]> {
-    return Promise.resolve([]);
+    return this.userService.finAllUsers();
   }
 }

@@ -19,17 +19,17 @@ export class EnvConfigService implements EnvRepository {
     return this.configService.get<string>(value);
   }
 
-  get isDevelop(): boolean {
+  isDevelop(): boolean {
     const data = this.getString('NODE_ENV');
     return data === 'development';
   }
 
-  get isProduction(): boolean {
+  isProduction(): boolean {
     const data = this.getString('NODE_ENV');
     return data === 'production';
   }
 
-  get getDatabaseUrl(): string {
+  getDatabaseUrl(): string {
     return this.getString('POSTGRES_URL');
   }
 }

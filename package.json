@@ -90,6 +90,7 @@
       "interfaces",
       "jestGlobalMocks.ts",
       ".module.ts",
+      ".entity.ts",
       ".mock.ts",
       "main.ts"
     ],

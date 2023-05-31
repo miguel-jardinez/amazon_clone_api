@@ -9,10 +9,10 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
   createTypeOrmOptions(): Promise<TypeOrmModuleOptions> | TypeOrmModuleOptions {
     return {
       type: 'postgres',
-      url: this.envConfigService.getDatabaseUrl,
+      url: this.envConfigService.getDatabaseUrl(),
       entities: [`${__dirname}/../../**/*.entity.{ts,js}`],
-      synchronize: this.envConfigService.isDevelop,
-      logging: this.envConfigService.isDevelop,
+      synchronize: this.envConfigService.isDevelop(),
+      logging: this.envConfigService.isDevelop(),
     };
   }
 }
