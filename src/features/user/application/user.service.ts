@@ -1,15 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { PasswordService } from '../../../core/shared/services/password/application/password.service';
 import { UserRepository } from '../domain/user.repository';
+import { UserException } from '../utils/user-exception.service';
 import { UserEntity } from './entities/user.entity';
 import { CreateUserDto } from './models/create-user.dto';
-import { UpdateUserDto } from './models/update-user.dto';
+import { DeleteUserDto } from './models/delete-user.dto';
 
 @Injectable()
 export class UserService implements UserRepository {
+  private readonly logger = new Logger(UserService.name);
+
   constructor(
     @InjectRepository(UserEntity)
     private readonly userEntity: Repository<UserEntity>,
@@ -19,53 +22,60 @@ export class UserService implements UserRepository {
     try {
       user.password = await this.passwordService.hashPassword(user.password);
       const data = this.userEntity.create(user);
+
+      this.logger.log(
+        `${user.email} was created successfully :: ${new Date()}`,
+      );
       return await this.userEntity.save(data);
-    } catch (e) {
-      console.log(e);
+    } catch (error: any) {
+      UserException(error, user.email, this.logger);
     }
   }
 
-  async deleteUser(email: string): Promise<string> {
+  async deleteUser(deleteUserDto: DeleteUserDto): Promise<{ message: string }> {
     try {
-      const data = await this.userEntity.delete({ email });
+      const data = await this.userEntity.delete({ email: deleteUserDto.email });
 
       if (data.affected === 0) {
-        return `User ${email} was not deleted`;
+        this.logger.log(
+          `Users ${deleteUserDto.email} not deleted :: ${new Date()}`,
+        );
+        throw new Error(
+          `User ${
+            deleteUserDto.email
+          } was not found and deleted :: ${new Date()}`,
+        );
       }
 
-      return `User ${email} was deleted`;
-    } catch (e) {
-      console.log(e);
-    }
-  }
+      this.logger.log(`Users ${deleteUserDto.email} deleted :: ${new Date()}`);
 
-  async getByEmail(email: string): Promise<UserEntity | null> {
-    try {
-      return this.userEntity.findOneByOrFail({ email });
-    } catch (e) {
-      console.log(e);
+      return {
+        message: `User ${deleteUserDto.email} was deleted`,
+      };
+    } catch (error) {
+      UserException(error, deleteUserDto.email, this.logger);
     }
   }
 
   async getById(id: string): Promise<UserEntity | null> {
     try {
-      return this.userEntity.findOneByOrFail({ id });
+      const data = await this.userEntity.findOneByOrFail({ id });
+      this.logger.log(`Users ${data.email} found :: ${new Date()}`);
+
+      return data;
     } catch (e) {
       console.log(e);
     }
   }
 
-  async updateUser(email: string, user: UpdateUserDto): Promise<string> {
+  async finAllUsers(): Promise<UserEntity[]> {
     try {
-      const data = await this.userEntity.update({ email }, user);
+      const data = await this.userEntity.find();
+      this.logger.log(`All users found :: ${new Date()}`);
 
-      if (data.affected === 0) {
-        return `User ${email} was not deleted`;
-      }
-
-      return `User ${email} was updated`;
-    } catch (e) {
-      console.log(e);
+      return data;
+    } catch (error) {
+      UserException(error, 'Get All Users', this.logger);
     }
   }
 }
