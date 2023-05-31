@@ -5,4 +5,5 @@ export interface EnvRepository {
   getDatabaseUrl(): string;
   isDevelop(): boolean;
   isProduction(): boolean;
+  configJwt(): { secret: string; expiresIn: string };
 }

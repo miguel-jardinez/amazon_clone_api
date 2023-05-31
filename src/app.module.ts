@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { TypeOrmConfigService } from './core/database/typeorm.service';
 import { SharedModule } from './core/shared/shared.module';
+import { AuthModule } from './features/auth/auth.module';
 import { UserModule } from './features/user/user.module';
 
 @Module({
@@ -15,6 +16,7 @@ import { UserModule } from './features/user/user.module';
     }),
     SharedModule,
     UserModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],

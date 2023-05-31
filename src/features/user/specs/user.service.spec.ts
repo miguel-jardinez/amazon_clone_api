@@ -22,7 +22,6 @@ describe('UserService', () => {
     CreateUserDto = {
       email: faker.internet.email(),
       password: faker.internet.password(),
-      role: [UserRoles.CLIENT],
     };
 
     mockId = faker.string.uuid();
@@ -70,17 +69,17 @@ describe('UserService', () => {
 
       const createSpy = jest
         .spyOn(repository, 'create')
-        .mockReturnValue(mockUser);
+        .mockReturnValue({ ...mockUser, role: [UserRoles.CLIENT] });
 
       const saveSpy = jest
         .spyOn(repository, 'save')
-        .mockResolvedValue(mockUser);
+        .mockResolvedValue({ ...mockUser, role: [UserRoles.CLIENT] });
 
       // CALL FUNCTIONS
       const data = await service.createUser(CreateUserDto);
 
       // ASSERTION
-      expect(data).toEqual(mockUser);
+      expect(data).toEqual({ ...mockUser, role: [UserRoles.CLIENT] });
       expect(createSpy).toHaveBeenCalled();
       expect(saveSpy).toHaveBeenCalled();
       expect(hashPasswordSpy).toHaveBeenCalledWith(CreateUserDto.password);
@@ -114,6 +113,7 @@ describe('UserService', () => {
         .mockResolvedValue({
           ...CreateUserDto,
           id: mockId,
+          role: [UserRoles.CLIENT],
         });
 
       // CALL FUNCTIONS
@@ -121,7 +121,11 @@ describe('UserService', () => {
 
       // ASSERTION
       expect(getSpy).toHaveBeenCalled();
-      expect(data).toEqual({ ...CreateUserDto, id: mockId });
+      expect(data).toEqual({
+        ...CreateUserDto,
+        id: mockId,
+        role: [UserRoles.CLIENT],
+      });
     });
   });
 
@@ -132,6 +136,7 @@ describe('UserService', () => {
         {
           ...CreateUserDto,
           id: mockId,
+          role: [UserRoles.CLIENT],
         },
       ]);
 
@@ -140,7 +145,9 @@ describe('UserService', () => {
 
       // ASSERTION
       expect(finAllSpy).toHaveBeenCalled();
-      expect(data).toEqual([{ ...CreateUserDto, id: mockId }]);
+      expect(data).toEqual([
+        { ...CreateUserDto, id: mockId, role: [UserRoles.CLIENT] },
+      ]);
     });
   });
 });
