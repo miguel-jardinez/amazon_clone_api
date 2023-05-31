@@ -87,35 +87,41 @@ describe('UserService', () => {
     });
   });
 
-  describe('Update user', () => {
-    it('should ', async () => {
-      // CONFIGURATION
-      // CALL FUNCTIONS
-      // ASSERTION
-    });
-  });
-
   describe('Delete user', () => {
-    it('should ', async () => {
+    it('should return success message when user was deleted', async () => {
       // CONFIGURATION
+      const deleteSpy = jest.spyOn(repository, 'delete').mockResolvedValue({
+        affected: 1,
+        raw: [],
+      });
+
       // CALL FUNCTIONS
+      const data = await service.deleteUser({ email: CreateUserDto.email });
+
       // ASSERTION
+      expect(deleteSpy).toHaveBeenCalled();
+      expect(data).toEqual({
+        message: `User ${CreateUserDto.email} was deleted`,
+      });
     });
   });
 
   describe('Get by Id', () => {
-    it('should ', async () => {
+    it('should Return user by id', async () => {
       // CONFIGURATION
-      // CALL FUNCTIONS
-      // ASSERTION
-    });
-  });
+      const getSpy = jest
+        .spyOn(repository, 'findOneByOrFail')
+        .mockResolvedValue({
+          ...CreateUserDto,
+          id: mockId,
+        });
 
-  describe('Get by email', () => {
-    it('should ', async () => {
-      // CONFIGURATION
       // CALL FUNCTIONS
+      const data = await service.getById(mockId);
+
       // ASSERTION
+      expect(getSpy).toHaveBeenCalled();
+      expect(data).toEqual({ ...CreateUserDto, id: mockId });
     });
   });
 });

@@ -64,7 +64,7 @@ export class UserService implements UserRepository {
 
       return data;
     } catch (e) {
-      console.log(e);
+      UserException(e, id, this.logger);
     }
   }
 
