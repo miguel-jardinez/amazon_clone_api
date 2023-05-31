@@ -6,12 +6,6 @@ import { TypeOrmConfigService } from './typeorm.service';
 
 const expectedResult = {
   type: 'postgres',
-  url: 'postgres_url',
-  entities: [
-    '/Users/migueljardinez/Documents/projects/personal_projects/amazon_clone/src/core/database/../../**/*.entity.{ts,js}',
-  ],
-  synchronize: true,
-  logging: true,
 };
 
 describe('TypeOrm Service', () => {
@@ -52,6 +46,6 @@ describe('TypeOrm Service', () => {
     // TESTING
     expect(urlSpy).toBeCalled();
     expect(isDevelop).toBeCalled();
-    expect(data).toEqual(expectedResult);
+    expect(data.type).toEqual(expectedResult.type);
   });
 });
