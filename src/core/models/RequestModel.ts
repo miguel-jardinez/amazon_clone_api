@@ -1,5 +1,4 @@
-import { UserEntity } from '../../features/user/application/entities/user.entity';
-
 export type RequestModel = {
-  user: UserEntity;
+  user_id: string;
+  profile_id: string;
 };

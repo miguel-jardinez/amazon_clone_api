@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 
 import { UserRoles } from '../../../core/models/UserRoles';
 import { PasswordService } from '../../../core/shared/services/password/application/password.service';
+import { ProfileService } from '../../profile/application/profile.service';
 import { UserEntity } from '../application/entities/user.entity';
 import { CreateUserDto } from '../application/models/create-user.dto';
 import { UserService } from '../application/user.service';
@@ -13,6 +14,7 @@ import { UserService } from '../application/user.service';
 describe('UserService', () => {
   let service: UserService;
   let passwordService: PasswordService;
+  let profileService: ProfileService;
   let repository: Repository<UserEntity>;
 
   let CreateUserDto: CreateUserDto;
@@ -37,11 +39,16 @@ describe('UserService', () => {
           provide: getRepositoryToken(UserEntity),
           useValue: createMock<UserEntity>(),
         },
+        {
+          provide: ProfileService,
+          useValue: createMock<ProfileService>(),
+        },
       ],
     }).compile();
 
     service = module.get<UserService>(UserService);
     passwordService = module.get<PasswordService>(PasswordService);
+    profileService = module.get<ProfileService>(ProfileService);
     repository = module.get<Repository<UserEntity>>(
       getRepositoryToken(UserEntity),
     );
@@ -75,6 +82,17 @@ describe('UserService', () => {
         .spyOn(repository, 'save')
         .mockResolvedValue({ ...mockUser, role: [UserRoles.CLIENT] });
 
+      const createProfileSpy = jest
+        .spyOn(profileService, 'createProfile')
+        .mockResolvedValue({
+          id: faker.string.uuid(),
+          name: faker.person.firstName(),
+          last_name: faker.person.lastName(),
+          phone_code: '+52',
+          phone_number: faker.phone.number(),
+          user: null,
+        });
+
       // CALL FUNCTIONS
       const data = await service.createUser(CreateUserDto);
 
@@ -82,6 +100,7 @@ describe('UserService', () => {
       expect(data).toEqual({ ...mockUser, role: [UserRoles.CLIENT] });
       expect(createSpy).toHaveBeenCalled();
       expect(saveSpy).toHaveBeenCalled();
+      expect(createProfileSpy).toHaveBeenCalled();
       expect(hashPasswordSpy).toHaveBeenCalledWith(CreateUserDto.password);
     });
   });
