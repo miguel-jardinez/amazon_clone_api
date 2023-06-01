@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { createMock } from '@golevelup/ts-jest';
+import { HttpException, HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -92,6 +93,22 @@ describe('ProfileService', () => {
         expect(saveSpy).toHaveBeenCalled();
         expect(data).toEqual({ ...profileCreated, id, user: null });
       });
+
+      it('should return error exception', async () => {
+        // CONFIGURATION
+        const errorMessage = 'Error to save user';
+
+        jest
+          .spyOn(repository, 'save')
+          .mockRejectedValue(
+            new HttpException(errorMessage, HttpStatus.CONFLICT),
+          );
+
+        // CALL FUNCTION
+        await expect(
+          service.createProfile(request.user_id, profileCreated),
+        ).rejects.toThrowError(errorMessage);
+      });
     });
 
     describe('Update Profile', () => {
@@ -116,6 +133,20 @@ describe('ProfileService', () => {
         // ASSERTIONS
         expect(updateSpy).toHaveBeenCalled();
         expect(data).toEqual(successMessage);
+      });
+
+      it('should return error exception', async () => {
+        // CONFIGURATION
+        jest.spyOn(repository, 'update').mockResolvedValue({
+          affected: 0,
+          raw: [],
+          generatedMaps: [],
+        });
+
+        // CALL FUNCTION
+        await expect(
+          service.updateProfile(request.profile_id, profileUpdated),
+        ).rejects.toThrowError(`Profile ${request.profile_id} not found`);
       });
     });
   });
