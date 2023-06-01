@@ -90,7 +90,7 @@ describe('ProfileService', () => {
         // ASSERTIONS
         expect(createSpy).toHaveBeenCalled();
         expect(saveSpy).toHaveBeenCalled();
-        expect(data).toEqual(profileCreated);
+        expect(data).toEqual({ ...profileCreated, id, user: null });
       });
     });
 
@@ -98,7 +98,7 @@ describe('ProfileService', () => {
       it('should return success response', async () => {
         // CONFIGURATION
         const successMessage = {
-          message: `User ${request.profile_id} was updated`,
+          message: `Profile ${request.profile_id} successfully updated`,
         } as SimpleResponse;
 
         const updateSpy = jest.spyOn(repository, 'update').mockResolvedValue({
