@@ -50,10 +50,11 @@ export class UserService implements UserRepository {
         this.logger.log(
           `Users ${deleteUserDto.email} not deleted :: ${new Date()}`,
         );
-        throw new Error(
+        throw new HttpException(
           `User ${
             deleteUserDto.email
           } was not found and deleted :: ${new Date()}`,
+          HttpStatus.NOT_FOUND,
         );
       }
 
