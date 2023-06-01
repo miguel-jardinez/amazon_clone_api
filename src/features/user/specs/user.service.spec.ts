@@ -1,11 +1,13 @@
 import { faker } from '@faker-js/faker';
 import { createMock } from '@golevelup/ts-jest';
+import { HttpException, HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { QueryFailedError, Repository } from 'typeorm';
 
 import { UserRoles } from '../../../core/models/UserRoles';
 import { PasswordService } from '../../../core/shared/services/password/application/password.service';
+import { ProfileService } from '../../profile/application/profile.service';
 import { UserEntity } from '../application/entities/user.entity';
 import { CreateUserDto } from '../application/models/create-user.dto';
 import { UserService } from '../application/user.service';
@@ -13,6 +15,7 @@ import { UserService } from '../application/user.service';
 describe('UserService', () => {
   let service: UserService;
   let passwordService: PasswordService;
+  let profileService: ProfileService;
   let repository: Repository<UserEntity>;
 
   let CreateUserDto: CreateUserDto;
@@ -37,11 +40,16 @@ describe('UserService', () => {
           provide: getRepositoryToken(UserEntity),
           useValue: createMock<UserEntity>(),
         },
+        {
+          provide: ProfileService,
+          useValue: createMock<ProfileService>(),
+        },
       ],
     }).compile();
 
     service = module.get<UserService>(UserService);
     passwordService = module.get<PasswordService>(PasswordService);
+    profileService = module.get<ProfileService>(ProfileService);
     repository = module.get<Repository<UserEntity>>(
       getRepositoryToken(UserEntity),
     );
@@ -75,6 +83,17 @@ describe('UserService', () => {
         .spyOn(repository, 'save')
         .mockResolvedValue({ ...mockUser, role: [UserRoles.CLIENT] });
 
+      const createProfileSpy = jest
+        .spyOn(profileService, 'createProfile')
+        .mockResolvedValue({
+          id: faker.string.uuid(),
+          name: faker.person.firstName(),
+          last_name: faker.person.lastName(),
+          phone_code: '+52',
+          phone_number: faker.phone.number(),
+          user: null,
+        });
+
       // CALL FUNCTIONS
       const data = await service.createUser(CreateUserDto);
 
@@ -82,7 +101,36 @@ describe('UserService', () => {
       expect(data).toEqual({ ...mockUser, role: [UserRoles.CLIENT] });
       expect(createSpy).toHaveBeenCalled();
       expect(saveSpy).toHaveBeenCalled();
+      expect(createProfileSpy).toHaveBeenCalled();
       expect(hashPasswordSpy).toHaveBeenCalledWith(CreateUserDto.password);
+    });
+
+    it('should return a duplicated error exception', async () => {
+      const mockUser = {
+        ...CreateUserDto,
+        id: mockId,
+      };
+
+      // CONFIGURATION
+      jest
+        .spyOn(passwordService, 'hashPassword')
+        .mockResolvedValue(CreateUserDto.password);
+
+      jest
+        .spyOn(repository, 'create')
+        .mockReturnValue({ ...mockUser, role: [UserRoles.CLIENT] });
+
+      jest.spyOn(repository, 'save').mockRejectedValue(
+        new QueryFailedError('', [], {
+          code: '23505',
+        }),
+      );
+
+      // ASSERTION
+
+      await expect(service.createUser(CreateUserDto)).rejects.toThrowError(
+        `${mockUser.email} already exist`,
+      );
     });
   });
 
@@ -102,6 +150,36 @@ describe('UserService', () => {
       expect(data).toEqual({
         message: `User ${CreateUserDto.email} was deleted`,
       });
+    });
+
+    it('should return error message when no user were deleted', async () => {
+      // CONFIGURATION
+      const message = `User ${
+        CreateUserDto.email
+      } was not found and deleted :: ${new Date()}`;
+
+      jest.spyOn(repository, 'delete').mockResolvedValue({
+        affected: 0,
+        raw: [],
+      });
+
+      // ASSERTION
+      await expect(
+        service.deleteUser({ email: CreateUserDto.email }),
+      ).rejects.toThrowError(message);
+    });
+
+    it('should return error message when service fails', async () => {
+      // CONFIGURATION
+      const error = 'Not deleted';
+      jest
+        .spyOn(repository, 'delete')
+        .mockRejectedValue(new HttpException(error, HttpStatus.NOT_FOUND));
+
+      // ASSERTION
+      await expect(
+        service.deleteUser({ email: CreateUserDto.email }),
+      ).rejects.toThrowError(error);
     });
   });
 
@@ -127,6 +205,17 @@ describe('UserService', () => {
         role: [UserRoles.CLIENT],
       });
     });
+
+    it('should return rejected response', async () => {
+      // CONFIGURATION
+      const error = 'Error to find users by id';
+      jest
+        .spyOn(repository, 'findOneByOrFail')
+        .mockRejectedValue(new HttpException(error, HttpStatus.NOT_FOUND));
+
+      // ASSERTION
+      await expect(service.getById(mockId)).rejects.toThrowError(error);
+    });
   });
 
   describe('Find all users', () => {
@@ -148,6 +237,20 @@ describe('UserService', () => {
       expect(data).toEqual([
         { ...CreateUserDto, id: mockId, role: [UserRoles.CLIENT] },
       ]);
+    });
+
+    it('should return reject response', async () => {
+      // CONFIGURATION
+      jest
+        .spyOn(repository, 'find')
+        .mockRejectedValue(
+          new HttpException('Error to find all users', HttpStatus.NOT_FOUND),
+        );
+
+      // ASSERTION
+      await expect(service.finAllUsers()).rejects.toThrowError(
+        'Error to find all users',
+      );
     });
   });
 });

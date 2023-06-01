@@ -46,6 +46,9 @@ describe('AuthService', () => {
         password: faker.internet.password(),
         role: [UserRoles.CLIENT],
         id: faker.string.uuid(),
+        profile: {
+          id: faker.string.uuid(),
+        },
       } as UserEntity;
 
       // CALL FUNCTIONS
@@ -53,7 +56,7 @@ describe('AuthService', () => {
       const data = await service.login(user);
 
       // ASSERTIONS
-      expect(data).toEqual({ user, token });
+      expect(data).toEqual({ token });
       expect(jwtSignSpy).toHaveBeenCalled();
     });
 
@@ -65,6 +68,9 @@ describe('AuthService', () => {
         password: faker.internet.password(),
         role: [UserRoles.CLIENT],
         id: faker.string.uuid(),
+        profile: {
+          id: faker.string.uuid(),
+        },
       } as UserEntity;
 
       // CALL FUNCTION
@@ -80,7 +86,7 @@ describe('AuthService', () => {
       });
 
       // ASSERTIONS
-      expect(data).toEqual({ user, token });
+      expect(data).toEqual({ token });
       expect(jwtSignSpy).toHaveBeenCalled();
       expect(registerSpy).toHaveBeenCalled();
     });

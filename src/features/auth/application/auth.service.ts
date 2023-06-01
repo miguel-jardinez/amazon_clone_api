@@ -25,9 +25,12 @@ export class AuthService implements AuthRepository {
 
   async login(user: UserEntity): Promise<LoginResponseDto | null> {
     try {
-      const token = this.jwtService.sign({ id: user.id });
+      const token = this.jwtService.sign({
+        user_id: user.id,
+        profile_id: user.profile.id,
+      });
 
-      return new LoginResponseDto(user, token);
+      return new LoginResponseDto(token);
     } catch (e) {
       this.logger.error(`Error to login ${user.email} :: ${new Date()}`);
       throw new AuthExceptionService(e.message, HttpStatus.CONFLICT);
@@ -41,9 +44,12 @@ export class AuthService implements AuthRepository {
         `User ${register.email} successfully registered :: ${new Date()}`,
       );
 
-      const token = this.jwtService.sign({ id: data.id });
+      const token = this.jwtService.sign({
+        user_id: data.id,
+        profile_id: data.profile.id,
+      });
 
-      return new LoginResponseDto(data, token);
+      return new LoginResponseDto(token);
     } catch (e) {
       this.logger.error(`Error to register ${register.email} :: ${new Date()}`);
       throw new AuthExceptionService(e.message, HttpStatus.CONFLICT);
