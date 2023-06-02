@@ -2,10 +2,12 @@ import {
   Column,
   Entity,
   JoinColumn,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
+import { ProductEntity } from '../../../products/application/entities/product.entity';
 import { UserEntity } from '../../../user/application/entities/user.entity';
 import { ProfileEntityRepository } from '../../domain/profile-entity.repository';
 
@@ -29,4 +31,7 @@ export class ProfileEntity implements ProfileEntityRepository {
   @OneToOne(() => UserEntity)
   @JoinColumn({ name: 'user_id' })
   user: UserEntity;
+
+  @OneToMany(() => ProductEntity, (product: ProductEntity) => product.profile)
+  products?: ProductEntity[];
 }
