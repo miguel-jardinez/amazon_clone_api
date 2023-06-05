@@ -101,7 +101,6 @@ export class UserService implements UserRepository {
           profile: true,
         },
       });
-
       const isPasswordValid = await this.passwordService.verifyPassword(
         data.password,
         password,

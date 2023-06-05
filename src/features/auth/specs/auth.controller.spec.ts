@@ -3,6 +3,7 @@ import { createMock } from '@golevelup/ts-jest';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { RequestModel } from '../../../core/models/RequestModel';
+import { UserRoles } from '../../../core/models/UserRoles';
 import { AuthService } from '../application/auth.service';
 import { RegisterAuthDto } from '../application/models/register-auth.dto';
 import { AuthController } from '../infrestucture/auth.controller';
