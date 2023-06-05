@@ -1,4 +1,10 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 import { ProfileEntity } from '../../../profile/application/entities/profile.entity';
 import { CreateProductEntityRepository } from '../../domain/create-product-entity.repository';
@@ -17,9 +23,11 @@ export class ProductEntity implements CreateProductEntityRepository {
   @Column('text')
   name: string;
 
-  @Column('text', { default: 0.0 })
-  starts: number;
-
-  @ManyToOne(() => ProfileEntity, (profile: ProfileEntity) => profile.products)
+  @ManyToOne(
+    () => ProfileEntity,
+    (profile: ProfileEntity) => profile.products,
+    { onDelete: 'CASCADE' },
+  )
+  @JoinColumn({ name: 'profile_id' })
   profile: ProfileEntity;
 }

@@ -31,12 +31,12 @@ export class UserService implements UserRepository {
         `${user.email} was created successfully :: ${new Date()}`,
       );
       const userData = await this.userEntity.save(userCreated);
-      await this.profileService.createProfile(
+      const profile = await this.profileService.createProfile(
         userData.id,
         {} as CreateProfileDto,
       );
 
-      return userData;
+      return { ...userData, profile };
     } catch (error: any) {
       UserException(error, user.email, this.logger);
     }
@@ -95,7 +95,13 @@ export class UserService implements UserRepository {
     password: string,
   ): Promise<UserEntity | null> {
     try {
-      const data = await this.userEntity.findOneByOrFail({ email });
+      const data = await this.userEntity.findOne({
+        where: { email },
+        relations: {
+          profile: true,
+        },
+      });
+
       const isPasswordValid = await this.passwordService.verifyPassword(
         data.password,
         password,

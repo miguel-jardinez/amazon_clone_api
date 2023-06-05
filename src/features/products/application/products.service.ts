@@ -106,9 +106,10 @@ export class ProductsService implements ProductServiceRepository {
     try {
       const wasUpdated = await this.productRepository.update(
         {
+          id: productId,
           profile: { id: profileId },
         },
-        product,
+        { ...product },
       );
 
       if (wasUpdated.affected === 0) {

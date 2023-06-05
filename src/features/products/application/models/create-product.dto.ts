@@ -1,4 +1,4 @@
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 import { CreateProductRepository } from '../../domain/create-product.repository';
 
@@ -12,8 +12,4 @@ export class CreateProductDto implements CreateProductRepository {
 
   @IsString()
   name: string;
-
-  @IsNumber()
-  @IsOptional()
-  starts: number;
 }

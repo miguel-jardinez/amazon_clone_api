@@ -28,10 +28,15 @@ export class ProfileEntity implements ProfileEntityRepository {
   @Column('text', { nullable: true })
   phone_number: string;
 
-  @OneToOne(() => UserEntity)
-  @JoinColumn({ name: 'user_id' })
+  @OneToOne(() => UserEntity, (user) => user.profile, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'userid' })
   user: UserEntity;
 
-  @OneToMany(() => ProductEntity, (product: ProductEntity) => product.profile)
+  @OneToMany(() => ProductEntity, (product: ProductEntity) => product.profile, {
+    onDelete: 'CASCADE',
+    cascade: true,
+  })
   products?: ProductEntity[];
 }

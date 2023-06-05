@@ -7,9 +7,9 @@ import {
   Post,
   Put,
   Req,
-  UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 import { RequestModel } from '../../../core/models/RequestModel';
 import { SimpleResponse } from '../../../core/models/SimpleResponse';
@@ -19,12 +19,12 @@ import { DeleteProductDto } from '../application/models/delete-product.dto';
 import { ProductsService } from '../application/products.service';
 import { ProductServiceRepository } from '../domain/product-controller.repository';
 
-@UseGuards(AuthGuard('jwt'))
 @Controller('products')
 export class ProductsController implements ProductServiceRepository {
   constructor(private readonly productsService: ProductsService) {}
 
   @Post()
+  @UseInterceptors(FileInterceptor('image'))
   createProduct(
     @Req() request: RequestModel,
     @Body() product: CreateProductDto,
@@ -46,7 +46,7 @@ export class ProductsController implements ProductServiceRepository {
   @Get('/:productId')
   findProductById(
     @Req() request: RequestModel,
-    @Param() productId,
+    @Param('productId') productId: string,
   ): Promise<ProductEntity> {
     return this.productsService.findProductById(request.profile_id, productId);
   }
@@ -56,10 +56,10 @@ export class ProductsController implements ProductServiceRepository {
     return this.productsService.getAllProduct(request.profile_id);
   }
 
-  @Put()
+  @Put('/:productId')
   updateProduct(
     @Req() request: RequestModel,
-    @Param() productId: string,
+    @Param('productId') productId: string,
     @Body() product: CreateProductDto,
   ): Promise<SimpleResponse> {
     return this.productsService.updateProduct(

@@ -45,7 +45,6 @@ describe('ProductsController', () => {
         description: faker.commerce.productDescription(),
         image: faker.image.url(),
         name: faker.commerce.productName(),
-        starts: 4.5,
       };
 
       productId = faker.string.uuid();
