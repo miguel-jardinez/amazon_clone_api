@@ -253,4 +253,36 @@ describe('UserService', () => {
       );
     });
   });
+
+  describe('Verify user', () => {
+    it('should return user entity when repository return success', async () => {
+      // CONFIGURATION
+      const findSpy = jest
+        .spyOn(repository, 'findOneByOrFail')
+        .mockResolvedValue({
+          ...CreateUserDto,
+          id: mockId,
+          role: [UserRoles.CLIENT],
+        });
+
+      const verifySpy = jest
+        .spyOn(passwordService, 'verifyPassword')
+        .mockResolvedValue(true);
+
+      // CALL FUNCTIONS
+      const data = await service.verifyUserLogin(
+        CreateUserDto.email,
+        CreateUserDto.password,
+      );
+
+      // ASSERTIONS
+      expect(data).toEqual({
+        email: CreateUserDto.email,
+        id: mockId,
+        role: [UserRoles.CLIENT],
+      });
+      expect(verifySpy).toHaveBeenCalled();
+      expect(findSpy).toHaveBeenCalled();
+    });
+  });
 });

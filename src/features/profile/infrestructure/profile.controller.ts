@@ -1,4 +1,12 @@
-import { Body, Controller, Put, Req, Request, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Put,
+  Req,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 import { RequestModel } from '../../../core/models/RequestModel';
@@ -23,6 +31,7 @@ export class ProfileController implements ProfileControllerRepository {
     return this.profileService.updateProfile(id, updateProfile);
   }
 
+  @Get()
   getProfile(@Req() request: RequestModel): Promise<ProfileEntity> {
     return this.profileService.getProfile(request.user_id);
   }

@@ -9,15 +9,19 @@ export interface ProductServiceRepository {
     request: RequestModel,
     product: CreateProductDto,
   ): Promise<ProductEntity>;
+
   updateProduct(
     request: RequestModel,
     productId: string,
     product: CreateProductDto,
   ): Promise<SimpleResponse>;
+
   deleteProduct(
     request: RequestModel,
     deleteProduct: DeleteProductDto,
   ): Promise<SimpleResponse>;
+
   getAllProduct(request: RequestModel): Promise<ProductEntity[]>;
+
   findProductById(request: RequestModel, productId): Promise<ProductEntity>;
 }

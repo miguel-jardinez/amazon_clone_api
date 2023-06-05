@@ -22,12 +22,12 @@ export class ProductsService implements ProductServiceRepository {
     product: CreateProductDto,
   ): Promise<ProductEntity> {
     try {
-      const productCreated = await this.productRepository.create(product);
-
-      const data = await this.productRepository.save({
-        ...productCreated,
+      const productCreated = this.productRepository.create({
+        ...product,
         profile: { id: profileId },
       });
+
+      const data = await this.productRepository.save(productCreated);
 
       this.logger.log(`Product ${data} was created to profile ${profileId}`);
 
@@ -119,7 +119,7 @@ export class ProductsService implements ProductServiceRepository {
       }
 
       return {
-        message: `Product ${productId} not updated`,
+        message: `Product ${productId} updated`,
       };
     } catch (error) {
       throw new ProductExceptionService(error.message, error.status);

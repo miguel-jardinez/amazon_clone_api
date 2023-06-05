@@ -149,5 +149,42 @@ describe('ProfileService', () => {
         ).rejects.toThrowError(`Profile ${request.profile_id} not found`);
       });
     });
+
+    describe('Get Profile', () => {
+      it('should return profile entity when service return success', async () => {
+        // CONFIGURATION
+        const findSpy = jest
+          .spyOn(repository, 'findOneByOrFail')
+          .mockResolvedValue({
+            ...profileCreated,
+            id,
+            user: null,
+          });
+
+        // CALL FUNCTIONS
+        const data = await service.getProfile(request.user_id);
+
+        // ASSERTIONS
+        expect(findSpy).toHaveBeenCalled();
+        expect(data).toEqual({
+          ...profileCreated,
+          id,
+          user: null,
+        });
+      });
+
+      it('should [...] when fails', async () => {
+        // CONFIGURATION
+        const message = `Error to find profile for user ${request.user_id}`;
+        jest
+          .spyOn(repository, 'findOneByOrFail')
+          .mockRejectedValue(new HttpException(message, HttpStatus.NOT_FOUND));
+
+        // ASSERTIONS
+        await expect(service.getProfile(request.user_id)).rejects.toThrowError(
+          message,
+        );
+      });
+    });
   });
 });

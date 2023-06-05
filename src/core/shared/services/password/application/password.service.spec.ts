@@ -20,18 +20,20 @@ describe('TypeOrm Service', () => {
     });
   });
 
-  it('should return hash password', async () => {
-    // CONFIGURATION
-    const hashSpy = jest
-      .spyOn(argon, 'hash')
-      .mockResolvedValue('mock_password');
+  describe('Hash password', () => {
+    it('should return hash password', async () => {
+      // CONFIGURATION
+      const hashSpy = jest
+        .spyOn(argon, 'hash')
+        .mockResolvedValue('mock_password');
 
-    // CALL FUNCTIONS
-    const data = await service.hashPassword('password');
+      // CALL FUNCTIONS
+      const data = await service.hashPassword('password');
 
-    // TESTING
-    expect(hashSpy).toHaveBeenCalled();
-    expect(data).toEqual('mock_password');
+      // TESTING
+      expect(hashSpy).toHaveBeenCalled();
+      expect(data).toEqual('mock_password');
+    });
   });
 
   it('should return verify password', async () => {
