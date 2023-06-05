@@ -43,7 +43,8 @@
     "postgres": "^3.3.4",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0",
-    "typeorm": "^0.3.16"
+    "typeorm": "^0.3.16",
+    "vercel": "^30.1.2"
   },
   "devDependencies": {
     "@faker-js/faker": "^8.0.2",
