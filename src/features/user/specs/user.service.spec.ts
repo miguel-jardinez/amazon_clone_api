@@ -70,6 +70,15 @@ describe('UserService', () => {
         id: mockId,
       };
 
+      const profile = {
+        id: faker.string.uuid(),
+        name: faker.person.firstName(),
+        last_name: faker.person.lastName(),
+        phone_code: '+52',
+        phone_number: faker.phone.number(),
+        user: null,
+      };
+
       // CONFIGURATION
       const hashPasswordSpy = jest
         .spyOn(passwordService, 'hashPassword')
@@ -85,20 +94,13 @@ describe('UserService', () => {
 
       const createProfileSpy = jest
         .spyOn(profileService, 'createProfile')
-        .mockResolvedValue({
-          id: faker.string.uuid(),
-          name: faker.person.firstName(),
-          last_name: faker.person.lastName(),
-          phone_code: '+52',
-          phone_number: faker.phone.number(),
-          user: null,
-        });
+        .mockResolvedValue(profile);
 
       // CALL FUNCTIONS
       const data = await service.createUser(CreateUserDto);
 
       // ASSERTION
-      expect(data).toEqual({ ...mockUser, role: [UserRoles.CLIENT] });
+      expect(data).toEqual({ ...mockUser, role: [UserRoles.CLIENT], profile });
       expect(createSpy).toHaveBeenCalled();
       expect(saveSpy).toHaveBeenCalled();
       expect(createProfileSpy).toHaveBeenCalled();
@@ -251,6 +253,38 @@ describe('UserService', () => {
       await expect(service.finAllUsers()).rejects.toThrowError(
         'Error to find all users',
       );
+    });
+  });
+
+  describe('Verify user', () => {
+    it('should return user entity when repository return success', async () => {
+      // CONFIGURATION
+      const findSpy = jest.spyOn(repository, 'findOne').mockResolvedValue({
+        ...CreateUserDto,
+        id: mockId,
+        role: [UserRoles.CLIENT],
+        profile: null,
+      });
+
+      const verifySpy = jest
+        .spyOn(passwordService, 'verifyPassword')
+        .mockResolvedValue(true);
+
+      // CALL FUNCTIONS
+      const data = await service.verifyUserLogin(
+        CreateUserDto.email,
+        CreateUserDto.password,
+      );
+
+      // ASSERTIONS
+      expect(data).toEqual({
+        email: CreateUserDto.email,
+        id: mockId,
+        role: [UserRoles.CLIENT],
+        profile: null,
+      });
+      expect(verifySpy).toHaveBeenCalled();
+      expect(findSpy).toHaveBeenCalled();
     });
   });
 });

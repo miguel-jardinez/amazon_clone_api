@@ -2,10 +2,12 @@ import {
   Column,
   Entity,
   JoinColumn,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
+import { ProductEntity } from '../../../products/application/entities/product.entity';
 import { UserEntity } from '../../../user/application/entities/user.entity';
 import { ProfileEntityRepository } from '../../domain/profile-entity.repository';
 
@@ -26,7 +28,15 @@ export class ProfileEntity implements ProfileEntityRepository {
   @Column('text', { nullable: true })
   phone_number: string;
 
-  @OneToOne(() => UserEntity)
-  @JoinColumn({ name: 'user_id' })
+  @OneToOne(() => UserEntity, (user) => user.profile, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'userid' })
   user: UserEntity;
+
+  @OneToMany(() => ProductEntity, (product: ProductEntity) => product.profile, {
+    onDelete: 'CASCADE',
+    cascade: true,
+  })
+  products?: ProductEntity[];
 }

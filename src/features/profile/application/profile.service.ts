@@ -69,4 +69,20 @@ export class ProfileService implements ProfileServiceRepository {
       );
     }
   }
+
+  async getProfile(user_id: string): Promise<ProfileEntity> {
+    try {
+      const profile = await this.profileRepository.findOneByOrFail({
+        user: { id: user_id },
+      });
+      this.logger.log(`Profile found to user ${user_id}`);
+
+      return profile;
+    } catch (e) {
+      throw new ProfileExceptionService(
+        e.message,
+        e.code ?? HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 }

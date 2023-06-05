@@ -12,4 +12,6 @@ export interface ProfileServiceRepository {
     id: string,
     updateProfile: UpdateProfileDto,
   ): Promise<SimpleResponse>;
+
+  getProfile(user_id: string): Promise<ProfileEntity>;
 }

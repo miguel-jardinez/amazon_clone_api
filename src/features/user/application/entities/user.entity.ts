@@ -19,7 +19,7 @@ export class UserEntity {
   @Column({ type: 'simple-array', enum: UserRoles, default: UserRoles.CLIENT })
   role: UserRoles[];
 
-  @OneToOne(() => ProfileEntity)
+  @OneToOne(() => ProfileEntity, (profile) => profile.user)
   profile?: ProfileEntity;
 
   constructor(partial: Partial<UserEntity>) {
