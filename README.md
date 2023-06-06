@@ -10,6 +10,18 @@ nvm use
 
 it should configure your node version to **v16.16.0**
 
+### Migrations
+
+If in your PR you added new features to schema in database, run migration to enable it in production
+follow these instructions to add migrations.
+
+```bash
+npx typeorm-ts-node-esm migration:generate ./src/migrations/<NAME_OF_YOUR_MIGRATION> -d src/core/database/migration.config.ts
+```
+
+and when your migration was created it's available to deploy to production.
+
+
 
 ### Test structure
 

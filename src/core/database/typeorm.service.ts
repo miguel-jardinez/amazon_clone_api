@@ -12,7 +12,11 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       url: this.envConfigService.getDatabaseUrl(),
       entities: [`${__dirname}/../../**/*.entity.{ts,js}`],
       synchronize: this.envConfigService.isDevelop(),
-      logging: this.envConfigService.isDevelop(),
+      logging: true,
+      logger: 'file',
+      autoLoadEntities: true,
+      migrationsRun: this.envConfigService.isProduction(),
+      migrations: [`${__dirname}/../../migrations/**/*.{ts,js}`],
     };
   }
 }

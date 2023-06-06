@@ -10,6 +10,10 @@ const expectedResult = {
   entities: [`${__dirname}/../../**/*.entity.{ts,js}`],
   synchronize: true,
   logging: true,
+  autoLoadEntities: true,
+  logger: 'file',
+  migrations: [`${__dirname}/../../migrations/**/*.{ts,js}`],
+  migrationsRun: false,
 };
 
 describe('TypeOrm Service', () => {
@@ -41,6 +45,9 @@ describe('TypeOrm Service', () => {
       .mockReturnValue('postgres_url');
 
     const isDevelop = jest.spyOn(envService, 'isDevelop').mockReturnValue(true);
+    const isProduction = jest
+      .spyOn(envService, 'isProduction')
+      .mockReturnValue(false);
 
     // CALL FUNCTIONS
     const data = await typeOrmService.createTypeOrmOptions();
@@ -48,6 +55,7 @@ describe('TypeOrm Service', () => {
     // TESTING
     expect(urlSpy).toBeCalled();
     expect(isDevelop).toBeCalled();
+    expect(isProduction).toBeCalled();
     expect(data).toEqual(expectedResult);
   });
 });
