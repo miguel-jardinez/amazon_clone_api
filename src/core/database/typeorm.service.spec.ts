@@ -10,6 +10,12 @@ const expectedResult = {
   entities: [`${__dirname}/../../**/*.entity.{ts,js}`],
   synchronize: true,
   logging: true,
+  autoLoadEntities: true,
+  logger: 'file',
+  migrations: [
+    '/Users/migueljardinez/Documents/projects/personal_projects/amazon_clone/src/core/database/../../migrations/**/*.{ts,js}',
+  ],
+  migrationsRun: {},
 };
 
 describe('TypeOrm Service', () => {
