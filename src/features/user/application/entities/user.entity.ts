@@ -1,7 +1,8 @@
 import { Exclude } from 'class-transformer';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 import { UserRoles } from '../../../../core/models/UserRoles';
+import { ProfileEntity } from '../../../profile/application/entities/profile.entity';
 
 @Entity('user')
 export class UserEntity {
@@ -17,6 +18,9 @@ export class UserEntity {
 
   @Column({ type: 'simple-array', enum: UserRoles, default: UserRoles.CLIENT })
   role: UserRoles[];
+
+  @OneToOne(() => ProfileEntity, (profile) => profile.user)
+  profile?: ProfileEntity;
 
   constructor(partial: Partial<UserEntity>) {
     Object.assign(this, partial);
