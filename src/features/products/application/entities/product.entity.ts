@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import {
   Column,
   Entity,
@@ -12,15 +13,19 @@ import { CreateProductEntityRepository } from '../../domain/create-product-entit
 @Entity('products')
 export class ProductEntity implements CreateProductEntityRepository {
   @PrimaryGeneratedColumn('uuid')
+  @ApiProperty()
   id: string;
 
   @Column('text')
+  @ApiProperty()
   description: string;
 
   @Column('text', { default: 'https://placehold.co/500x500' })
+  @ApiProperty()
   image: string;
 
   @Column('text')
+  @ApiProperty()
   name: string;
 
   @ManyToOne(

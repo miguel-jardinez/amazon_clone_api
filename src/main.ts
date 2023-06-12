@@ -14,6 +14,7 @@ async function bootstrap(): Promise<void> {
     .setDescription('Amazon clone API for all kind of frontend applications')
     .setVersion('1.0')
     .addTag('Amazon Clone')
+    .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);

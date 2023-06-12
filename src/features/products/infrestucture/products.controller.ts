@@ -10,6 +10,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
 import { RequestModel } from '../../../core/models/RequestModel';
 import { SimpleResponse } from '../../../core/models/SimpleResponse';
@@ -19,12 +20,14 @@ import { DeleteProductDto } from '../application/models/delete-product.dto';
 import { ProductsService } from '../application/products.service';
 import { ProductServiceRepository } from '../domain/product-controller.repository';
 
+@ApiTags('Products')
 @Controller('products')
 export class ProductsController implements ProductServiceRepository {
   constructor(private readonly productsService: ProductsService) {}
 
   @Post()
   @UseInterceptors(FileInterceptor('image'))
+  @ApiOkResponse({ type: ProductEntity })
   createProduct(
     @Req() request: RequestModel,
     @Body() product: CreateProductDto,
@@ -44,6 +47,7 @@ export class ProductsController implements ProductServiceRepository {
   }
 
   @Get('/:productId')
+  @ApiOkResponse({ type: ProductEntity })
   findProductById(
     @Req() request: RequestModel,
     @Param('productId') productId: string,
@@ -52,6 +56,7 @@ export class ProductsController implements ProductServiceRepository {
   }
 
   @Get()
+  @ApiOkResponse({ type: [ProductEntity] })
   getAllProduct(@Req() request: RequestModel): Promise<ProductEntity[]> {
     return this.productsService.getAllProduct(request.profile_id);
   }
