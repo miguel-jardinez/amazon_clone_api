@@ -8,6 +8,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiTags } from '@nestjs/swagger';
 
 import { RequestModel } from '../../../core/models/RequestModel';
 import { SimpleResponse } from '../../../core/models/SimpleResponse';
@@ -16,6 +17,7 @@ import { ProfileEntity } from '../application/entities/profile.entity';
 import { ProfileService } from '../application/profile.service';
 import { ProfileControllerRepository } from '../domain/profile-controller.repository';
 
+@ApiTags('Profile')
 @UseGuards(AuthGuard('jwt'))
 @Controller('profile')
 export class ProfileController implements ProfileControllerRepository {
