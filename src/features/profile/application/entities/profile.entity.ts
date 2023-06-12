@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import {
   Column,
   Entity,
@@ -14,18 +15,23 @@ import { ProfileEntityRepository } from '../../domain/profile-entity.repository'
 @Entity('profile')
 export class ProfileEntity implements ProfileEntityRepository {
   @PrimaryGeneratedColumn('uuid')
+  @ApiProperty()
   id: string;
 
   @Column('text', { nullable: true })
+  @ApiProperty()
   name: string;
 
   @Column('text', { nullable: true })
+  @ApiProperty()
   last_name: string;
 
   @Column('text', { nullable: true })
+  @ApiProperty()
   phone_code: string;
 
   @Column('text', { nullable: true })
+  @ApiProperty()
   phone_number: string;
 
   @OneToOne(() => UserEntity, (user) => user.profile, {
@@ -38,5 +44,6 @@ export class ProfileEntity implements ProfileEntityRepository {
     onDelete: 'CASCADE',
     cascade: true,
   })
+  @ApiProperty({ type: () => [ProductEntity] })
   products?: ProductEntity[];
 }
