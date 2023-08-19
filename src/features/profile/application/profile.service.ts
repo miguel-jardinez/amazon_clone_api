@@ -59,9 +59,7 @@ export class ProfileService implements ProfileServiceRepository {
       }
 
       this.logger.log(`Profile ${id} successfully updated`);
-      return {
-        message: `Profile ${id} successfully updated`,
-      };
+      return SimpleResponse.response(`Profile ${id} successfully updated`);
     } catch (e) {
       throw new ProfileExceptionService(
         e.message,
